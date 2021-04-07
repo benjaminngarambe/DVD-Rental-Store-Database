@@ -10,7 +10,29 @@ namespace Database
 {
     class Menu
     {
-        public void Begin()
+		public void Actions(string note = "")
+		{
+			Console.Clear();
+
+			Console.WriteLine("DVD Rental Store Menu:\n");
+			Console.WriteLine("1. Current DVD offers");
+			Console.WriteLine("2. See client rentals");
+			Console.WriteLine("3. Create new rental");
+			Console.WriteLine("4. Register return");
+			Console.WriteLine("5. See all clients");
+			Console.WriteLine("6. Create new user");
+			Console.WriteLine("7. Create new movie");
+			Console.WriteLine("8. Show overdue rentals");
+			Console.WriteLine("9. Show statistics");
+
+			Console.WriteLine("\n0. Exit");
+
+			if (note != "")
+				Console.WriteLine("\n\nError: " + note);
+
+			Console.Write("\nInput:");
+		}
+		public void Begin()
         {
             try
             {
@@ -112,7 +134,7 @@ namespace Database
 			while (true)
 			{
 				Console.Clear();
-				Console.Write("In order to see client's rentals please provide client_id:");
+				Console.Write("To see a client rentals list please provide the client_id  :");
 				if (!Int32.TryParse(Console.ReadLine(), out clientId))
 					continue;
 				else
@@ -123,7 +145,7 @@ namespace Database
 			var client = Client.GetAll().FirstOrDefault(obj => obj.Id == clientId);
 
 			if (client == null)
-				Console.WriteLine("Client was not found.");
+				Console.WriteLine("The client does not exist in the database");
 			else
 			{
 				Console.WriteLine("{0,40}{1,30}", "Full Name", "Birthday");
@@ -166,7 +188,7 @@ namespace Database
 			while (true)
 			{
 				Console.Clear();
-				Console.WriteLine("Creation of a new rental.(write exit to go back)\n");
+				Console.WriteLine("Creation of a new rental for the client.(write goback to go back)\n");
 
 				if (errorMsg != null)
 				{
@@ -175,16 +197,16 @@ namespace Database
 
 				Console.Write("Please write a client_id:");
 				String clientId = Console.ReadLine();
-				if (clientId == "exit") return;
+				if (clientId == "go back") return;
 
 				Console.Write("Please write a copy_id:");
 				String copyId = Console.ReadLine();
-				if (copyId == "exit") return;
+				if (copyId == "go back") return;
 
 				try
 				{
 					Copy copy = Copy.GetByID(Int32.Parse(copyId));
-					if (!copy.Available) throw new Exception("Copy is not available now.");
+					if (!copy.Available) throw new Exception("This Copy is not available right now in the database.");
 
 					Rental rental = new Rental(Int32.Parse(copyId), Int32.Parse(clientId), DateTime.Now);
 					rental.InsertAndSave();
@@ -198,7 +220,7 @@ namespace Database
 					continue;
 				}
 
-				Console.WriteLine("Success! Rental was created!");
+				Console.WriteLine("Victory! The Rental was created!");
 				break;
 			}
 
@@ -218,7 +240,7 @@ namespace Database
 			while (true)
 			{
 				Console.Clear();
-				Console.Write("Please provide client_id:");
+				Console.Write("Please provide the client_id:");
 				if (!Int32.TryParse(Console.ReadLine(), out clientId))
 					continue;
 				else
@@ -229,7 +251,7 @@ namespace Database
 			Client client = Client.GetAll().Where(obj => obj.Id == clientId).FirstOrDefault();
 
 			if (client == null)
-				Console.WriteLine("Client was not found.");
+				Console.WriteLine("Client was not found in the database.");
 			else
 			{
 				Console.WriteLine("{0,40}{1,30}", "Full Name", "Birthday");
@@ -241,7 +263,7 @@ namespace Database
 
 			while (true)
 			{
-				Console.Write("\nPlease provide copy_id:");
+				Console.Write("\nPlease provide the copy_id:");
 				if (!Int32.TryParse(Console.ReadLine(), out copyId))
 					continue;
 				else
@@ -251,20 +273,20 @@ namespace Database
 			Copy copy = Copy.GetAll().Where(obj => obj.Id == copyId).FirstOrDefault();
 
 			if (copy == null)
-				Console.WriteLine("Copy was not found.");
+				Console.WriteLine("Copy was not found in the database.");
 			else
 			{
 				Rental rental = Rental.GetAll().Where(obj => obj.CopyId == copyId && obj.ClientId == clientId).FirstOrDefault();
 
 				if (rental == null)
-					Console.WriteLine("\nRental was not found.");
+					Console.WriteLine("\nRental was not found in the databse.");
 				else if (rental.DateOfReturn != null)
-					Console.WriteLine("\nRental is already returned.");
+					Console.WriteLine("\nRental has already been returned.");
 				else
 				{
 					rental.Return();
 
-					Console.WriteLine("\nCopy was successfully returned.");
+					Console.WriteLine("\nCopy was successfully returned in the database.");
 				}
 			}
 
@@ -297,22 +319,22 @@ namespace Database
 			while (true)
 			{
 				Console.Clear();
-				Console.WriteLine("Creation of a new user.(write exit to go back)\n");
+				Console.WriteLine("Creation of a new user in the databse.(write go back to go back)\n");
 
 				if (errorMsg != null)
 					Console.WriteLine("Error: " + errorMsg);
 
 				Console.Write("Please write a first name of the user:");
 				String firstName = Console.ReadLine();
-				if (firstName == "exit") return;
+				if (firstName == "go back") return;
 
 				Console.Write("Please write a last name of the user:");
 				String lastName = Console.ReadLine();
-				if (lastName == "exit") return;
+				if (lastName == "go back") return;
 
 				Console.Write("Please write a birthday of the user(yyyy/mm/dd):");
 				String birthday = Console.ReadLine();
-				if (birthday == "exit") return;
+				if (birthday == "go back") return;
 
 				try
 				{
@@ -325,7 +347,7 @@ namespace Database
 					continue;
 				}
 
-				Console.WriteLine("Success! Client was created!");
+				Console.WriteLine("Victory! a new Client was created in the database!");
 				break;
 			}
 
@@ -342,26 +364,26 @@ namespace Database
 			while (true)
 			{
 				Console.Clear();
-				Console.WriteLine("Creation of a new movie.(write exit to go back)\n");
+				Console.WriteLine("Creation of a new movie in the database.(write go back to go back)\n");
 
 				if (errorMsg != null)
 					Console.WriteLine("Error: " + errorMsg);
 
-				Console.Write("Please write a title:");
+				Console.Write("Please write the title:");
 				String title = Console.ReadLine();
-				if (title == "exit") return;
+				if (title == "go back") return;
 
-				Console.Write("Please write a year:");
+				Console.Write("Please write the year:");
 				String year = Console.ReadLine();
-				if (year == "exit") return;
+				if (year == "go back") return;
 
-				Console.Write("Please write an age restriction:");
+				Console.Write("Please write the age restriction:");
 				String ageRestriction = Console.ReadLine();
-				if (ageRestriction == "exit") return;
+				if (ageRestriction == "go back") return;
 
-				Console.Write("Please write a price:");
+				Console.Write("Please write it's price:");
 				String price = Console.ReadLine();
-				if (price == "exit") return;
+				if (price == "go back") return;
 
 				NpgsqlTransaction transaction = null;
 				NpgsqlConnection connection = null;
@@ -392,7 +414,7 @@ namespace Database
 					connection?.Close();
 				}
 
-				Console.WriteLine("Success! Movie was created!");
+				Console.WriteLine("Victory! Movie was created!");
 				break;
 			}
 
@@ -428,19 +450,17 @@ namespace Database
 			while (true)
 			{
 				Console.Clear();
-				Console.Write("Statistics\n\n");
+				Console.Write("Statistics Description\n\n");
 
 				if (errorMsg != null)
 					Console.WriteLine($"Error: {errorMsg}\n");
 
-				Console.WriteLine("Write the date from what you want to see stats");
-				Console.WriteLine("Write all - to see for the all time. Format(yyyy/mm/dd)");
-				Console.Write("Input: ");
+				Console.WriteLine($"Write the date from when you want to see statistics\nWrite full - to see for the all time.Format(yyyy / mm / dd)\nInput: ");
 				String date = Console.ReadLine();
 
 				try
 				{
-					DateTime dt = date == "all" ? DateTime.Parse("1000/1/1") : DateTime.Parse(date);
+					DateTime dt = date == "full" ? DateTime.Parse("1000/1/1") : DateTime.Parse(date);
 
 					var resultTable = from c in Copy.GetAll()
 									  join r in Rental.GetAll() on c.Id equals r.CopyId
@@ -466,27 +486,6 @@ namespace Database
 				if (Console.ReadKey().Key == ConsoleKey.Escape) return;
 			}
 		}
-		public void Actions(string note = "")
-        {
-            Console.Clear();
-
-            Console.WriteLine("DVD Rental Store Menu:\n");
-            Console.WriteLine("1. Current offer");
-            Console.WriteLine("2. See client rentals");
-            Console.WriteLine("3. Create new rental");
-            Console.WriteLine("4. Register return");
-            Console.WriteLine("5. See all clients");
-            Console.WriteLine("6. Create new user");
-            Console.WriteLine("7. Create new movie");
-            Console.WriteLine("8. Show overdue rentals");
-            Console.WriteLine("9. Show statistics");
-
-            Console.WriteLine("\n0. Exit");
-
-            if (note!="")
-                Console.WriteLine("\n\nError: " + note);
-
-            Console.Write("\nInput:");
-        }
+		
     }
 }
